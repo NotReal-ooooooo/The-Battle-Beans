@@ -1,0 +1,217 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>The Battle Beans</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #87CEEB; /* background behind blue div */
+}
+
+/* BLUE BACKGROUND DIV */
+#BG1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #46f7fa;
+  z-index: 1;
+  transition: transform 1.2s ease-in;
+}
+
+/* PLAY BUTTON */
+button {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff9b44;
+}
+
+.play {
+  position: absolute;
+  top: 50vh;
+  left: 20px;
+
+  background-color: #ff7700;
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 28px;
+
+  padding: 6px 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 3;
+
+  transition: transform 1.2s ease-in, opacity 0s linear 1.2s;
+}
+
+.play span {
+  position: relative;
+  top: 2px;
+}
+
+/* CLOUD */
+#cloud {
+  position: absolute;
+  width: 210px;
+  height: 78px;
+  top: 18vh;
+  right: 9vw;
+
+  background: white;
+  border-radius: 60px;
+  z-index: 2;
+
+  transition: opacity 0s linear 1.2s;
+}
+
+#cloud::before,
+#cloud::after {
+  content: "";
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+}
+
+#cloud::before {
+  width: 90px;
+  height: 90px;
+  top: -42px;
+  left: 24px;
+}
+
+#cloud::after {
+  width: 102px;
+  height: 102px;
+  top: -54px;
+  right: 18px;
+}
+
+/* BEAN */
+#beanimg {
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
+  z-index: 2;
+
+  transform: translate(-50%, -50%);
+  transition: opacity 0s linear 1.2s;
+}
+</style>
+</head>
+
+<body>
+
+<div id="BG1"></div>
+<div id="cloud"></div>
+
+<img
+  src="https://f.playcode.io/p-2699715/v-1/019dd725-9dc5-77ee-929c-3b3f871f0323/basic-beans.png"
+  id="beanimg"
+>
+
+<button class="play" onclick="play()">
+  <span>play</span>
+</button>
+
+<script>
+
+                                             //start OF PAGE 1
+    
+const amplitude = 10;
+let speed = 0.3;
+
+const amplitude2 = 20;
+let speed2 = 0.6;
+
+let start = performance.now();
+let playing = false;
+
+/* FLOATING ANIMATION */
+function animate(time) {
+  const cloud = document.getElementById("cloud");
+  const beanimg = document.getElementById("beanimg");
+
+  const y = Math.sin((time - start) * 0.002 * speed) * amplitude;
+  const yb = Math.sin((time - start) * 0.002 * speed2) * amplitude2;
+
+  /* keep floating even before clicking */
+  if (!playing) {
+    cloud.style.transform = `translateY(${y}px)`;
+
+    beanimg.style.transform =
+      `translate(-50%, -50%) translateY(${yb}px)`;
+  }
+
+  requestAnimationFrame(animate);
+}
+
+requestAnimationFrame(animate);
+
+/* PLAY BUTTON CLICK */
+function play() {
+  if (playing) return;
+  playing = true;
+
+  const playBtn = document.querySelector(".play");
+  const cloud = document.getElementById("cloud");
+  const bean = document.getElementById("beanimg");
+  const bg = document.getElementById("BG1");
+
+  /* get their current floating position */
+  const cloudStyle = cloud.style.transform || "translateY(0px)";
+  const beanStyle = bean.style.transform || "translate(-50%, -50%) translateY(0px)";
+
+  /* stop idle animation exactly where it is */
+  cloud.style.transform = cloudStyle;
+  bean.style.transform = beanStyle;
+
+  /* smooth transition for play animation */
+  cloud.style.transition = "transform 1.2s ease-in";
+  bean.style.transition = "transform 1.2s ease-in";
+
+  /* first move slightly UP from current position */
+  setTimeout(() => {
+    playBtn.style.transform = "translateY(-40px)";
+    cloud.style.transform = "translateY(-40px)";
+    bean.style.transform = "translate(-50%, -50%) translateY(-40px)";
+    bg.style.transform = "translateY(-40px)";
+  }, 20);
+
+  /* then move DOWN offscreen */
+  setTimeout(() => {
+    playBtn.style.transform = "translateY(120vh)";
+    cloud.style.transform = "translateY(120vh)";
+    bean.style.transform = "translate(-50%, -50%) translateY(120vh)";
+    bg.style.transform = "translateY(120vh)";
+  }, 450);
+
+  /* instantly disappear after offscreen */
+  setTimeout(() => {
+    playBtn.style.display = "none";
+    cloud.style.display = "none";
+    bean.style.display = "none";
+    bg.style.display = "none";
+  }, 1700);
+}
+
+                                            //END OF PAGE 1
+
+
+      
+</script>
+
+</body>
+</html>
